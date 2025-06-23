@@ -235,6 +235,20 @@ class SettingsWindow(QDialog):
         unit_layout.addRow("Temperature Unit:", self.temp_unit_combo)
         layout.addLayout(unit_layout)
 
+        # Display Options
+        display_layout = QFormLayout()
+        self.show_titles_check = QCheckBox()
+        self.show_titles_check.setChecked(self.settings.get('visualization.show_component_titles', True))
+        self.show_titles_check.stateChanged.connect(self.update_show_titles)
+        display_layout.addRow("Show Component Titles:", self.show_titles_check)
+
+        self.indentation_spinbox = QSpinBox()
+        self.indentation_spinbox.setRange(0, 16)
+        self.indentation_spinbox.setValue(self.settings.get('visualization.sensor_indentation', 4))
+        self.indentation_spinbox.valueChanged.connect(self.update_indentation)
+        display_layout.addRow("Sensor Indentation:", self.indentation_spinbox)
+        layout.addLayout(display_layout)
+
         populate_button = QPushButton("Refresh Hardware List")
         populate_button.clicked.connect(self.populate_sensor_tree)
         layout.addWidget(populate_button)
@@ -339,6 +353,17 @@ class SettingsWindow(QDialog):
         unit = unit_text.lower()
         self.settings.set('monitoring.temperature_unit', unit)
         # Force a data refresh to apply the new unit
+        self.app.watermark.update_text(self.app._format_data_for_display(self.app.hardware_monitor.get_hardware_data()))
+
+    def update_show_titles(self, state):
+        """Updates the setting for showing component titles."""
+        show = bool(state == Qt.CheckState.Checked.value)
+        self.settings.set('visualization.show_component_titles', show)
+        self.app.watermark.update_text(self.app._format_data_for_display(self.app.hardware_monitor.get_hardware_data()))
+
+    def update_indentation(self, value):
+        """Updates the sensor indentation setting."""
+        self.settings.set('visualization.sensor_indentation', value)
         self.app.watermark.update_text(self.app._format_data_for_display(self.app.hardware_monitor.get_hardware_data()))
 
     def create_about_tab(self):
@@ -462,6 +487,8 @@ class SettingsWindow(QDialog):
 
         # Visualization Tab
         self.temp_unit_combo.setCurrentText(self.settings.get('monitoring.temperature_unit', 'celsius').capitalize())
+        self.show_titles_check.setChecked(self.settings.get('visualization.show_component_titles', True))
+        self.indentation_spinbox.setValue(self.settings.get('visualization.sensor_indentation', 4))
 
         # Position Tab
         self.monitor_combo.setCurrentIndex(self.settings.get('position.monitor', 0))

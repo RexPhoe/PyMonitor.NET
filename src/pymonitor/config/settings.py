@@ -33,7 +33,9 @@ class Settings:
             },
             'visualization': {
                 'enabled_sensors': {},
-                'component_order': []
+                'component_order': [],
+                'show_component_titles': True,
+                'sensor_indentation': 4
             },
             'monitoring': {
                 'update_interval': 2, # in seconds

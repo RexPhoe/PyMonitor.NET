@@ -101,13 +101,13 @@ class Application(QApplication):
         print("Cleanup complete. Exiting.")
 
     def _format_data_for_display(self, data):
-        """Formats the hardware data into a single string for the watermark."""
+        """Formats the hardware data for display based on user settings."""
         lines = []
         enabled_sensors_config = self.settings.get('visualization.enabled_sensors', {})
-
-        # If the config is empty, it might be the first run. Default to showing all.
-        is_config_empty = not any(enabled_sensors_config.values())
         component_order = self.settings.get('visualization.component_order', [])
+        show_titles = self.settings.get('visualization.show_component_titles', True)
+        indentation = self.settings.get('visualization.sensor_indentation', 4)
+        indent_space = "&nbsp;" * indentation
 
         # Sort data based on the component_order setting
         if component_order:
@@ -117,23 +117,25 @@ class Application(QApplication):
             hardware_name = hardware_item['name']
             enabled_sensors = enabled_sensors_config.get(hardware_name, [])
             
-            # If not configured, show all sensors for that hardware item
-            if is_config_empty:
-                sensors_to_display = hardware_item['sensors']
-            else:
-                # First, filter to only include enabled sensors
-                filtered_sensors = [s for s in hardware_item['sensors'] if s['name'] in enabled_sensors]
-                # Then, sort them based on the order in the config
-                filtered_sensors.sort(key=lambda s: enabled_sensors.index(s['name']))
-                sensors_to_display = filtered_sensors
+            # Filter and sort sensors based on settings
+            filtered_sensors = [s for s in hardware_item['sensors'] if s['name'] in enabled_sensors]
+            filtered_sensors.sort(key=lambda s: enabled_sensors.index(s['name']))
 
-            if sensors_to_display:
-                lines.append(f"<b>{hardware_name}</b>")
-                for sensor in sensors_to_display:
-                    lines.append(f"&nbsp;&nbsp;{sensor['name']}: {sensor['value']}")
+            if filtered_sensors:
+                if show_titles:
+                    lines.append(f"<b>{hardware_name}</b>")
+                
+                for sensor in filtered_sensors:
+                    prefix = indent_space if show_titles else ""
+                    lines.append(f"{prefix}{sensor['name']}: {sensor['value']}")
+                
                 lines.append("") # Add a blank line for spacing
 
-        return "<br>".join(lines).strip()
+        # Remove the last blank line if it exists
+        if lines and lines[-1] == "":
+            lines.pop()
+
+        return "<br>".join(lines)
 
     def cleanup(self):
         """Performs cleanup operations before exiting."""
