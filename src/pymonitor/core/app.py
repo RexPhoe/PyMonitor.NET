@@ -108,6 +108,8 @@ class Application(QApplication):
         show_titles = self.settings.get('visualization.show_component_titles', True)
         indentation = self.settings.get('visualization.sensor_indentation', 4)
         indent_space = "&nbsp;" * indentation
+        category_spacing = self.settings.get('visualization.category_spacing', 1)
+        display_mode = self.settings.get('visualization.display_mode', 'multiline')
 
         # Sort data based on the component_order setting
         if component_order:
@@ -117,22 +119,32 @@ class Application(QApplication):
             hardware_name = hardware_item['name']
             enabled_sensors = enabled_sensors_config.get(hardware_name, [])
             
-            # Filter and sort sensors based on settings
             filtered_sensors = [s for s in hardware_item['sensors'] if s['name'] in enabled_sensors]
             filtered_sensors.sort(key=lambda s: enabled_sensors.index(s['name']))
 
             if filtered_sensors:
-                if show_titles:
-                    lines.append(f"<b>{hardware_name}</b>")
+                if display_mode == 'multiline':
+                    if show_titles:
+                        lines.append(f"<b>{hardware_name}</b>")
+                    
+                    for sensor in filtered_sensors:
+                        prefix = indent_space if show_titles else ""
+                        lines.append(f"{prefix}{sensor['name']}: {sensor['value']}")
                 
-                for sensor in filtered_sensors:
-                    prefix = indent_space if show_titles else ""
-                    lines.append(f"{prefix}{sensor['name']}: {sensor['value']}")
-                
-                lines.append("") # Add a blank line for spacing
+                elif display_mode == 'singleline':
+                    sensor_strings = [f"{s['name']}: {s['value']}" for s in filtered_sensors]
+                    line = " | ".join(sensor_strings)
+                    if show_titles:
+                        lines.append(f"<b>{hardware_name}</b>: {line}")
+                    else:
+                        lines.append(line)
 
-        # Remove the last blank line if it exists
-        if lines and lines[-1] == "":
+                # Add vertical spacing between categories
+                for _ in range(category_spacing):
+                    lines.append("")
+
+        # Remove the last blank lines if they exist
+        while lines and lines[-1] == "":
             lines.pop()
 
         return "<br>".join(lines)

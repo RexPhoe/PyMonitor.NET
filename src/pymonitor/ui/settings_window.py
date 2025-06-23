@@ -247,6 +247,20 @@ class SettingsWindow(QDialog):
         self.indentation_spinbox.setValue(self.settings.get('visualization.sensor_indentation', 4))
         self.indentation_spinbox.valueChanged.connect(self.update_indentation)
         display_layout.addRow("Sensor Indentation:", self.indentation_spinbox)
+
+        self.spacing_spinbox = QSpinBox()
+        self.spacing_spinbox.setRange(0, 5)
+        self.spacing_spinbox.setValue(self.settings.get('visualization.category_spacing', 1))
+        self.spacing_spinbox.valueChanged.connect(self.update_category_spacing)
+        display_layout.addRow("Category Spacing:", self.spacing_spinbox)
+
+        self.display_mode_combo = QComboBox()
+        self.display_mode_combo.addItems(['Multiline', 'Single Line'])
+        current_mode = self.settings.get('visualization.display_mode', 'multiline')
+        self.display_mode_combo.setCurrentText(current_mode.capitalize())
+        self.display_mode_combo.currentTextChanged.connect(self.update_display_mode)
+        display_layout.addRow("Display Mode:", self.display_mode_combo)
+
         layout.addLayout(display_layout)
 
         populate_button = QPushButton("Refresh Hardware List")
@@ -364,6 +378,17 @@ class SettingsWindow(QDialog):
     def update_indentation(self, value):
         """Updates the sensor indentation setting."""
         self.settings.set('visualization.sensor_indentation', value)
+        self.app.watermark.update_text(self.app._format_data_for_display(self.app.hardware_monitor.get_hardware_data()))
+
+    def update_category_spacing(self, value):
+        """Updates the vertical spacing between categories."""
+        self.settings.set('visualization.category_spacing', value)
+        self.app.watermark.update_text(self.app._format_data_for_display(self.app.hardware_monitor.get_hardware_data()))
+
+    def update_display_mode(self, text):
+        """Updates the display mode for categories."""
+        mode = 'singleline' if text == 'Single Line' else 'multiline'
+        self.settings.set('visualization.display_mode', mode)
         self.app.watermark.update_text(self.app._format_data_for_display(self.app.hardware_monitor.get_hardware_data()))
 
     def create_about_tab(self):
@@ -489,6 +514,8 @@ class SettingsWindow(QDialog):
         self.temp_unit_combo.setCurrentText(self.settings.get('monitoring.temperature_unit', 'celsius').capitalize())
         self.show_titles_check.setChecked(self.settings.get('visualization.show_component_titles', True))
         self.indentation_spinbox.setValue(self.settings.get('visualization.sensor_indentation', 4))
+        self.spacing_spinbox.setValue(self.settings.get('visualization.category_spacing', 1))
+        self.display_mode_combo.setCurrentText(self.settings.get('visualization.display_mode', 'multiline').capitalize())
 
         # Position Tab
         self.monitor_combo.setCurrentIndex(self.settings.get('position.monitor', 0))

@@ -35,7 +35,9 @@ class Settings:
                 'enabled_sensors': {},
                 'component_order': [],
                 'show_component_titles': True,
-                'sensor_indentation': 4
+                'sensor_indentation': 4,
+                'category_spacing': 1,  # Number of blank lines
+                'display_mode': 'multiline'  # 'multiline' or 'singleline'
             },
             'monitoring': {
                 'update_interval': 2, # in seconds
