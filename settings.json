@@ -1,0 +1,74 @@
+{
+    "appearance": {
+        "font_family": "Unispace",
+        "font_size": 21,
+        "font_color": "#ffffff",
+        "opacity": 100,
+        "text_align": "right"
+    },
+    "position": {
+        "monitor": 0,
+        "anchor": "top_left",
+        "offset_x": 0,
+        "offset_y": 0,
+        "width": 600
+    },
+    "visualization": {
+        "enabled_sensors": {
+            "Gigabyte B760I AORUS PRO DDR4": [],
+            "12th Gen Intel Core i5-12600KF": [
+                "CPU Total",
+                "CPU Core Max"
+            ],
+            "Generic Memory": [
+                "Memory"
+            ],
+            "NVIDIA GeForce RTX 3090": [
+                "GPU Core",
+                "GPU Hot Spot",
+                "GPU Memory Used"
+            ],
+            "WD_BLACK SN770 2TB": [],
+            "Phison 1TB SM2801T24GKBB4S-E162": [],
+            "Conexi\u00f3n de \u00e1rea local* 10": [],
+            "Conexi\u00f3n de \u00e1rea local* 9": [],
+            "Conexi\u00f3n de red Bluetooth": [],
+            "Ethernet": [
+                "Data Uploaded",
+                "Data Downloaded",
+                "Network Utilization"
+            ],
+            "Wi-Fi": []
+        },
+        "component_order": []
+    },
+    "monitoring": {
+        "update_interval": 2,
+        "enabled_hardware": [
+            "Cpu",
+            "GpuNvidia",
+            "Memory"
+        ],
+        "enabled_sensors": {},
+        "order": {
+            "hardware": [
+                "Cpu",
+                "GpuNvidia",
+                "Memory"
+            ],
+            "sensors": {}
+        }
+    },
+    "about": {
+        "version": "0.2.0-beta",
+        "author": "Cascade, from Windsurf",
+        "repository_url": "https://github.com/RexPhoe/PyMonitor.NET"
+    },
+    "window": {
+        "monitor": 0,
+        "anchor": "top_left",
+        "offset_x": 10,
+        "offset_y": 10,
+        "always_on_top": true
+    }
+}
