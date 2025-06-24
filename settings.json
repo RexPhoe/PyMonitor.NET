@@ -1,17 +1,17 @@
 {
     "appearance": {
         "font_family": "Unispace",
-        "font_size": 21,
-        "font_color": "#ffffff",
-        "opacity": 27,
-        "text_align": "left"
+        "font_size": 16,
+        "font_color": "#ffe30e",
+        "opacity": 100,
+        "text_align": "right"
     },
     "position": {
-        "monitor": 0,
-        "anchor": "top_left",
+        "monitor": 1,
+        "anchor": "top_right",
         "offset_x": 0,
         "offset_y": 0,
-        "width": 600
+        "width": 360
     },
     "visualization": {
         "enabled_sensors": {
@@ -45,7 +45,9 @@
         },
         "component_order": [],
         "show_component_titles": false,
-        "sensor_indentation": 1
+        "sensor_indentation": 1,
+        "category_spacing": 1,
+        "display_mode": "multiline"
     },
     "monitoring": {
         "update_interval": 2,

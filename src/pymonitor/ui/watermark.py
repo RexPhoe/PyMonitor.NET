@@ -97,7 +97,7 @@ class WatermarkWindow(QWidget):
         color = self.settings.get('appearance.font_color', '#FFFFFF')
         opacity = self.settings.get('appearance.opacity', 100)
         align_str = self.settings.get('appearance.text_align', 'left')
-        width = int(self.settings.get('position.width', 400))
+        auto_width = self.settings.get('position.auto_width', True)
 
         # Apply font and color via stylesheet for robustness
         self.label.setStyleSheet(f"""
@@ -117,11 +117,18 @@ class WatermarkWindow(QWidget):
             alignment = Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft
         self.label.setAlignment(alignment)
 
-        # Set fixed width and calculate required height
-        self.setFixedWidth(width)
-        # Calculate height based on the label's content and new width
-        height = self.label.heightForWidth(width)
-        self.setFixedHeight(height)
+        # Adjust size based on auto_width setting
+        if auto_width:
+            # Unset fixed size constraints to allow auto-sizing
+            self.setMinimumSize(0, 0)
+            self.setMaximumSize(16777215, 16777215) # QWIDGETSIZE_MAX
+            self.adjustSize() # Let the label and layout determine the size
+        else:
+            # Set fixed width and calculate required height
+            width = int(self.settings.get('position.width', 400))
+            self.setFixedWidth(width)
+            height = self.label.heightForWidth(width)
+            self.setFixedHeight(height)
 
         # Apply opacity to the whole window
         self.setWindowOpacity(opacity / 100.0)
@@ -130,18 +137,6 @@ class WatermarkWindow(QWidget):
         self.update_position()
 
     def closeEvent(self, event):
-        """Ensure the application doesn't exit when this window is closed."""
+        """Ensure the application doesn't exit when this window is closed, as it's controlled by the tray icon."""
         # This window should not be closable by the user, but as a safeguard:
         event.ignore()
-
-
-    def closeEvent(self, event):
-        """Ensure the application doesn't exit when this window is closed."""
-        # This window should not be closable by the user, but as a safeguard:
-        event.ignore()
-        self.update_position()
-
-    def closeEvent(self, event):
-        """Handle the close event."""
-        self.app.exit()
-        event.accept()

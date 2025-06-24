@@ -29,7 +29,8 @@ class Settings:
                 'anchor': 'top_left', # e.g., 'top_left', 'center', 'bottom_right'
                 'offset_x': 10,
                 'offset_y': 10,
-                'width': 400 # Width of the watermark window in pixels
+                'width': 400,
+                'auto_width': True # New setting to enable automatic width adjustment
             },
             'visualization': {
                 'enabled_sensors': {},

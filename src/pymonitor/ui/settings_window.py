@@ -92,12 +92,20 @@ class SettingsWindow(QDialog):
         self.offset_y_spin.valueChanged.connect(self.update_offset_y)
         layout.addRow("Offset Y (px):", self.offset_y_spin)
 
+        # Auto Width
+        self.auto_width_check = QCheckBox("Auto Width")
+        self.auto_width_check.setChecked(self.settings.get('position.auto_width', True))
+        self.auto_width_check.stateChanged.connect(self.update_auto_width)
+        layout.addRow(self.auto_width_check)
+
         # Width
-        self.width_spin = QSpinBox()
-        self.width_spin.setRange(100, 3000) # Min 100px, Max 3000px
-        self.width_spin.setValue(int(self.settings.get('position.width', 400)))
-        self.width_spin.valueChanged.connect(self.update_width)
-        layout.addRow("Width (px):", self.width_spin)
+        self.width_spinbox = QSpinBox()
+        self.width_spinbox.setRange(100, 5000)
+        self.width_spinbox.setValue(self.settings.get('position.width', 400))
+        self.width_spinbox.valueChanged.connect(self.update_width)
+        # Disable width spinbox if auto_width is checked
+        self.width_spinbox.setEnabled(not self.auto_width_check.isChecked())
+        layout.addRow("Manual Width (px):", self.width_spinbox)
 
         tab.setLayout(layout)
         self.tabs.addTab(tab, "Position")
@@ -120,8 +128,16 @@ class SettingsWindow(QDialog):
         self.app.watermark.update_position()
 
     def update_width(self, value):
+        """Updates the width setting."""
         self.settings.set('position.width', value)
-        self.app.watermark.update_position()
+        self.app.watermark.update_geometry()
+
+    def update_auto_width(self, state):
+        """Updates the auto_width setting and enables/disables the width spinbox."""
+        is_checked = state == Qt.CheckState.Checked.value
+        self.settings.set('position.auto_width', is_checked)
+        self.width_spinbox.setEnabled(not is_checked)
+        self.app.watermark.update_geometry()
 
     def create_appearance_tab(self):
         """Creates the Appearance settings tab."""
@@ -520,9 +536,11 @@ class SettingsWindow(QDialog):
         # Position Tab
         self.monitor_combo.setCurrentIndex(self.settings.get('position.monitor', 0))
         self.anchor_combo.setCurrentIndex(self.anchor_combo.findData(self.settings.get('position.anchor', 'top_left')))
-        self.offset_x_spin.setValue(int(self.settings.get('position.offset_x', 10)))
-        self.offset_y_spin.setValue(int(self.settings.get('position.offset_y', 10)))
-        self.width_spin.setValue(int(self.settings.get('position.width', 400)))
+        self.offset_x_spinbox.setValue(self.settings.get('position.offset_x', 10))
+        self.offset_y_spinbox.setValue(self.settings.get('position.offset_y', 10))
+        self.auto_width_check.setChecked(self.settings.get('position.auto_width', True))
+        self.width_spinbox.setValue(self.settings.get('position.width', 400))
+        self.width_spinbox.setEnabled(not self.auto_width_check.isChecked())
 
         # Visualization Tab
         self.populate_sensor_tree()
