@@ -1,17 +1,18 @@
 {
     "appearance": {
-        "font_family": "Unispace",
-        "font_size": 16,
-        "font_color": "#ffe30e",
-        "opacity": 100,
+        "font_family": "Impact",
+        "font_size": 14,
+        "font_color": "#000000",
+        "opacity": 47,
         "text_align": "right"
     },
     "position": {
         "monitor": 1,
-        "anchor": "top_right",
-        "offset_x": 0,
-        "offset_y": 0,
-        "width": 360
+        "anchor": "bottom_right",
+        "offset_x": 5,
+        "offset_y": 50,
+        "width": 360,
+        "auto_width": true
     },
     "visualization": {
         "enabled_sensors": {
