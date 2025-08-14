@@ -258,6 +258,11 @@ class SettingsWindow(QDialog):
         self.show_titles_check.stateChanged.connect(self.update_show_titles)
         display_layout.addRow("Show Component Titles:", self.show_titles_check)
 
+        self.show_icons_check = QCheckBox()
+        self.show_icons_check.setChecked(self.settings.get('visualization.show_icons', True))
+        self.show_icons_check.stateChanged.connect(self.update_show_icons)
+        display_layout.addRow("Show Icons:", self.show_icons_check)
+
         self.indentation_spinbox = QSpinBox()
         self.indentation_spinbox.setRange(0, 16)
         self.indentation_spinbox.setValue(self.settings.get('visualization.sensor_indentation', 4))
@@ -389,6 +394,12 @@ class SettingsWindow(QDialog):
         """Updates the setting for showing component titles."""
         show = bool(state == Qt.CheckState.Checked.value)
         self.settings.set('visualization.show_component_titles', show)
+        self.app.watermark.update_text(self.app._format_data_for_display(self.app.hardware_monitor.get_hardware_data()))
+
+    def update_show_icons(self, state):
+        """Updates the setting for showing icons."""
+        show = bool(state == Qt.CheckState.Checked.value)
+        self.settings.set('visualization.show_icons', show)
         self.app.watermark.update_text(self.app._format_data_for_display(self.app.hardware_monitor.get_hardware_data()))
 
     def update_indentation(self, value):
@@ -532,6 +543,7 @@ class SettingsWindow(QDialog):
         self.indentation_spinbox.setValue(self.settings.get('visualization.sensor_indentation', 4))
         self.spacing_spinbox.setValue(self.settings.get('visualization.category_spacing', 1))
         self.display_mode_combo.setCurrentText(self.settings.get('visualization.display_mode', 'multiline').capitalize())
+        self.show_icons_check.setChecked(self.settings.get('visualization.show_icons', True))
 
         # Position Tab
         self.monitor_combo.setCurrentIndex(self.settings.get('position.monitor', 0))

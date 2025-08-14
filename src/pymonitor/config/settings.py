@@ -18,7 +18,7 @@ class Settings:
         return {
 
             'appearance': {
-                'font_family': 'Arial',
+                'font_family': 'HackNerdFont',
                 'font_size': 12,
                 'font_color': '#FFFFFF',
                 'opacity': 100,
@@ -38,7 +38,8 @@ class Settings:
                 'show_component_titles': True,
                 'sensor_indentation': 4,
                 'category_spacing': 1,  # Number of blank lines
-                'display_mode': 'multiline'  # 'multiline' or 'singleline'
+                'display_mode': 'multiline',  # 'multiline' or 'singleline'
+                'show_icons': True
             },
             'monitoring': {
                 'update_interval': 2, # in seconds
@@ -56,6 +57,31 @@ class Settings:
                 'version': '0.2.0-beta',
                 'author': 'Cascade, from Windsurf',
                 'repository_url': 'https://github.com/RexPhoe/PyMonitor.NET'
+            },
+            'icons': {
+                'hardware': {
+                    'Cpu': '\uf2db',
+                    'GPU': '\uf21b5',
+                    'GpuNvidia': '\uf21b5',
+                    'GpuAmd': '\uf21b5',
+                    'GpuIntel': '\uf21b5',
+                    'Memory': '\uf96a',
+                    'Motherboard': '\uf2db',
+                    'Storage': '\uf287',
+                    'HDD': '\uf287',
+                    'SSD': '\uf287',
+                    'Network': '\uf6ff',
+                    'Wifi': '\uf5a9'
+                },
+                'sensors': {
+                    'temperature': '\uf2c9',
+                    'load': '\uf141',
+                    'clock': '\uf251',
+                    'power': '\uf0e7',
+                    'fan': '\uf863',
+                    'data': '\uf1c0',
+                    'voltage': '\uf1e6'
+                }
             }
         }
 

@@ -1,14 +1,14 @@
 {
     "appearance": {
-        "font_family": "Impact",
+        "font_family": "Hack Nerd Font",
         "font_size": 14,
-        "font_color": "#000000",
-        "opacity": 47,
-        "text_align": "right"
+        "font_color": "#49a10f",
+        "opacity": 100,
+        "text_align": "left"
     },
     "position": {
         "monitor": 1,
-        "anchor": "bottom_right",
+        "anchor": "bottom_left",
         "offset_x": 5,
         "offset_y": 50,
         "width": 360,
@@ -18,7 +18,6 @@
         "enabled_sensors": {
             "Gigabyte B760I AORUS PRO DDR4": [],
             "12th Gen Intel Core i5-12600KF": [
-                "CPU Frequency",
                 "CPU Total",
                 "Core Max"
             ],
@@ -32,8 +31,6 @@
                 "GPU Hot Spot",
                 "GPU Memory Used"
             ],
-            "WD_BLACK SN770 2TB": [],
-            "Phison 1TB SM2801T24GKBB4S-E162": [],
             "Conexi\u00f3n de \u00e1rea local* 10": [],
             "Conexi\u00f3n de \u00e1rea local* 9": [],
             "Conexi\u00f3n de red Bluetooth": [],
@@ -46,9 +43,10 @@
         },
         "component_order": [],
         "show_component_titles": false,
-        "sensor_indentation": 1,
+        "sensor_indentation": 0,
         "category_spacing": 1,
-        "display_mode": "multiline"
+        "display_mode": "multiline",
+        "show_icons": true
     },
     "monitoring": {
         "update_interval": 2,
@@ -72,6 +70,31 @@
         "version": "0.2.0-beta",
         "author": "Cascade, from Windsurf",
         "repository_url": "https://github.com/RexPhoe/PyMonitor.NET"
+    },
+    "icons": {
+        "hardware": {
+            "Cpu": "\uf2db",
+            "GPU": "\uf21b5",
+            "GpuNvidia": "\uf21b5",
+            "GpuAmd": "\uf21b5",
+            "GpuIntel": "\uf21b5",
+            "Memory": "\uf96a",
+            "Motherboard": "\uf2db",
+            "Storage": "\uf287",
+            "HDD": "\uf287",
+            "SSD": "\uf287",
+            "Network": "\uf6ff",
+            "Wifi": "\uf5a9"
+        },
+        "sensors": {
+            "temperature": "\uf2c9",
+            "load": "\uf141",
+            "clock": "\uf251",
+            "power": "\uf0e7",
+            "fan": "\uf863",
+            "data": "\uf1c0",
+            "voltage": "\uf1e6"
+        }
     },
     "window": {
         "monitor": 0,

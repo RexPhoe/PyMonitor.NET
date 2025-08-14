@@ -5,6 +5,7 @@ import time
 import os
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QObject, QThread, pyqtSignal, QSharedMemory
+from PyQt6.QtGui import QFontDatabase
 
 from ..hardware.monitor import HardwareMonitor
 from ..config.settings import Settings
@@ -41,6 +42,17 @@ class Application(QApplication):
     """Main application class, inheriting from QApplication for GUI support."""
     def __init__(self, args):
         super().__init__(args)
+
+        # Load bundled Nerd Fonts so icons render even if not installed system-wide
+        try:
+            fonts_dir = os.path.join(PROJECT_ROOT, 'fonts')
+            if os.path.isdir(fonts_dir):
+                for fname in os.listdir(fonts_dir):
+                    if fname.lower().endswith('.ttf'):
+                        QFontDatabase.addApplicationFont(os.path.join(fonts_dir, fname))
+        except Exception as e:
+            # Non-fatal: continue even if fonts fail to load
+            print(f"Warning: failed to load fonts: {e}")
 
         # Single instance lock
         self.shared_memory = QSharedMemory("PyMonitor.NET_SINGLE_INSTANCE_LOCK")
@@ -110,6 +122,84 @@ class Application(QApplication):
         indent_space = "&nbsp;" * indentation
         category_spacing = self.settings.get('visualization.category_spacing', 1)
         display_mode = self.settings.get('visualization.display_mode', 'multiline')
+        show_icons = self.settings.get('visualization.show_icons', True)
+
+        # Read customizable icons from settings with fallback defaults
+        icons_cfg = self.settings.get('icons', {}) or {}
+        hw_icons_user = icons_cfg.get('hardware', {}) or {}
+        sensor_icons_user = icons_cfg.get('sensors', {}) or {}
+
+        hw_icons_fallback = {
+            'Cpu': '\uf2db',
+            'GPU': '\uf21b5',
+            'GpuNvidia': '\uf21b5',
+            'GpuAmd': '\uf21b5',
+            'GpuIntel': '\uf21b5',
+            'Memory': '\uf96a',
+            'Motherboard': '\uf2db',
+            'Storage': '\uf287',
+            'HDD': '\uf287',
+            'SSD': '\uf287',
+            'Network': '\uf6ff',
+            'Wifi': '\uf5a9',
+        }
+        sensor_icons_fallback = {
+            'temperature': '\uf2c9',
+            'load': '\uf141',
+            'clock': '\uf251',
+            'power': '\uf0e7',
+            'fan': '\uf863',
+            'data': '\uf1c0',
+            'voltage': '\uf1e6',
+        }
+
+        def get_hw_icon(hw_type_or_name: str) -> str:
+            if not hw_type_or_name:
+                return ''
+            # Exact user overrides first
+            if hw_type_or_name in hw_icons_user:
+                return hw_icons_user[hw_type_or_name]
+            cap = hw_type_or_name.capitalize()
+            if cap in hw_icons_user:
+                return hw_icons_user[cap]
+            # Fallback exacts
+            if hw_type_or_name in hw_icons_fallback:
+                return hw_icons_fallback[hw_type_or_name]
+            if cap in hw_icons_fallback:
+                return hw_icons_fallback[cap]
+            # Heuristics by substring
+            low = hw_type_or_name.lower()
+            if 'gpu' in low:
+                return hw_icons_user.get('GPU', hw_icons_fallback.get('GPU', ''))
+            if 'cpu' in low:
+                return hw_icons_user.get('Cpu', hw_icons_fallback.get('Cpu', ''))
+            if 'mem' in low:
+                return hw_icons_user.get('Memory', hw_icons_fallback.get('Memory', ''))
+            if 'stor' in low or 'disk' in low:
+                return hw_icons_user.get('Storage', hw_icons_fallback.get('Storage', ''))
+            if 'net' in low:
+                return hw_icons_user.get('Network', hw_icons_fallback.get('Network', ''))
+            if 'wifi' in low:
+                return hw_icons_user.get('Wifi', hw_icons_fallback.get('Wifi', ''))
+            return ''
+
+        def get_sensor_icon_by_type(sensor_type_str: str) -> str:
+            t = (sensor_type_str or '').lower()
+            if 'temperature' in t:
+                return sensor_icons_user.get('temperature', sensor_icons_fallback['temperature'])
+            if 'load' in t:
+                return sensor_icons_user.get('load', sensor_icons_fallback['load'])
+            if 'clock' in t:
+                return sensor_icons_user.get('clock', sensor_icons_fallback['clock'])
+            if 'power' in t:
+                return sensor_icons_user.get('power', sensor_icons_fallback['power'])
+            if 'fan' in t:
+                return sensor_icons_user.get('fan', sensor_icons_fallback['fan'])
+            if 'data' in t:
+                return sensor_icons_user.get('data', sensor_icons_fallback['data'])
+            if 'voltage' in t:
+                return sensor_icons_user.get('voltage', sensor_icons_fallback['voltage'])
+            return ''
 
         # Sort data based on the component_order setting
         if component_order:
@@ -117,25 +207,34 @@ class Application(QApplication):
 
         for hardware_item in data:
             hardware_name = hardware_item['name']
+            hardware_type = hardware_item.get('type', '')
             enabled_sensors = enabled_sensors_config.get(hardware_name, [])
-            
+
             filtered_sensors = [s for s in hardware_item['sensors'] if s['name'] in enabled_sensors]
             filtered_sensors.sort(key=lambda s: enabled_sensors.index(s['name']))
 
             if filtered_sensors:
+                title_icon = get_hw_icon(hardware_type or hardware_name) if show_icons else ''
+                title_prefix = (title_icon + ' ') if (show_icons and title_icon) else ''
+
                 if display_mode == 'multiline':
                     if show_titles:
-                        lines.append(f"<b>{hardware_name}</b>")
-                    
+                        lines.append(f"<b>{title_prefix}{hardware_name}</b>")
+
                     for sensor in filtered_sensors:
                         prefix = indent_space if show_titles else ""
-                        lines.append(f"{prefix}{sensor['name']}: {sensor['value']}")
-                
+                        sensor_icon = get_sensor_icon_by_type(sensor.get('type', '')) if show_icons else ''
+                        sensor_label = f"{sensor_icon} {sensor['name']}" if sensor_icon else sensor['name']
+                        lines.append(f"{prefix}{sensor_label}: {sensor['value']}")
                 elif display_mode == 'singleline':
-                    sensor_strings = [f"{s['name']}: {s['value']}" for s in filtered_sensors]
+                    sensor_strings = []
+                    for s in filtered_sensors:
+                        sensor_icon = get_sensor_icon_by_type(s.get('type', '')) if show_icons else ''
+                        name_part = f"{sensor_icon} {s['name']}" if sensor_icon else s['name']
+                        sensor_strings.append(f"{name_part}: {s['value']}")
                     line = " | ".join(sensor_strings)
                     if show_titles:
-                        lines.append(f"<b>{hardware_name}</b>: {line}")
+                        lines.append(f"<b>{title_prefix}{hardware_name}</b>: {line}")
                     else:
                         lines.append(line)
 
