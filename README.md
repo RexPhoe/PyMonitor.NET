@@ -6,7 +6,7 @@
 
 ## Key Features
 
-- **Real-Time Monitoring**: Tracks critical hardware stats including CPU, GPU, and RAM usage, temperatures, power consumption, and more.
+- **Real-Time Monitoring**: Tracks critical hardware stats including CPU usage, **real-time CPU frequency**, GPU performance, RAM usage, temperatures, power consumption, and more.
 - **Transparent Overlay**: Displays information directly on your desktop in a clean, unobtrusive "watermark" style.
 - **Click-Through Window**: The overlay is non-interactive, so you can click through it to access icons and windows underneath.
 - **Administrative Privileges**: Automatically requests administrator privileges for full hardware access.
@@ -104,6 +104,16 @@ The application will:
 2. Default settings will be applied for position and appearance
 3. You can customize everything through the Settings window
 
+### Testing CPU Frequency Monitoring
+
+To test the new CPU frequency monitoring feature:
+
+```bash
+python demo_cpu_frequency.py
+```
+
+This will demonstrate real-time CPU frequency monitoring for 30 seconds, showing how the application tracks the maximum frequency across all CPU cores.
+
 ---
 
 ## Configuration
@@ -126,12 +136,20 @@ All settings are managed through the intuitive UI and stored in the `settings.js
 
 The application automatically detects and supports:
 
-- **CPU**: Usage, temperature, clock speeds, power consumption
+- **CPU**: Usage, temperature, clock speeds, power consumption, and **real-time CPU frequency** (maximum frequency across all cores)
 - **GPU**: NVIDIA, AMD, and Intel graphics cards with usage, temperature, memory, and power data
 - **Memory**: RAM usage and statistics
 - **Storage**: HDD and SSD information
 - **Network**: Ethernet and Wi-Fi data transfer rates
 - **Motherboard**: Various sensor data where available
+
+#### CPU Frequency Monitoring
+
+The application includes an intelligent CPU frequency monitor that:
+- Automatically detects all CPU core frequencies in real-time
+- Calculates and displays the **maximum frequency** among all cores as "CPU Frequency"
+- Updates dynamically to show current processor performance
+- Provides accurate MHz readings for performance monitoring
 
 ---
 
