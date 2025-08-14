@@ -1,8 +1,8 @@
 {
     "appearance": {
         "font_family": "Hack Nerd Font",
-        "font_size": 14,
-        "font_color": "#49a10f",
+        "font_size": 15,
+        "font_color": "#ffffff",
         "opacity": 100,
         "text_align": "left"
     },
@@ -18,6 +18,7 @@
         "enabled_sensors": {
             "Gigabyte B760I AORUS PRO DDR4": [],
             "12th Gen Intel Core i5-12600KF": [
+                "CPU Frequency",
                 "CPU Total",
                 "Core Max"
             ],
@@ -31,20 +32,18 @@
                 "GPU Hot Spot",
                 "GPU Memory Used"
             ],
+            "WD_BLACK SN770 2TB": [],
+            "Phison 1TB SM2801T24GKBB4S-E162": [],
             "Conexi\u00f3n de \u00e1rea local* 10": [],
             "Conexi\u00f3n de \u00e1rea local* 9": [],
             "Conexi\u00f3n de red Bluetooth": [],
-            "Ethernet": [
-                "Data Uploaded",
-                "Data Downloaded",
-                "Network Utilization"
-            ],
+            "Ethernet": [],
             "Wi-Fi": []
         },
         "component_order": [],
         "show_component_titles": false,
         "sensor_indentation": 0,
-        "category_spacing": 1,
+        "category_spacing": 0,
         "display_mode": "multiline",
         "show_icons": true
     },
