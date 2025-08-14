@@ -84,7 +84,11 @@ class HardwareMonitor:
                         if 'Temperature' in str(sensor.SensorType) and temp_unit == 'fahrenheit':
                             value = (value * 9/5) + 32
 
-                        formatted_value = f"{value:.2f} {unit}".strip()
+                        # Special handling for data sensors (memory usage, etc.)
+                        if 'Data' in str(sensor.SensorType):
+                            formatted_value = self._format_data_value(value, sensor.Name)
+                        else:
+                            formatted_value = f"{value:.2f} {unit}".strip()
                     except (TypeError, ValueError):
                         formatted_value = str(value)
 
@@ -111,6 +115,32 @@ class HardwareMonitor:
             data.append(item)
         return data
 
+    def _format_data_value(self, value, sensor_name):
+        """Formats data values with appropriate units (bytes, MB, GB)."""
+        sensor_name_lower = sensor_name.lower()
+        
+        # GPU Memory is typically in MB when it comes from LibreHardwareMonitor
+        if 'gpu' in sensor_name_lower and 'memory' in sensor_name_lower:
+            # Convert MB to GB for display if value is large
+            if value >= 1024:
+                return f"{value / 1024:.2f} GB"
+            else:
+                return f"{value:.1f} MB"
+        
+        # Network data is usually in bytes, convert appropriately
+        if any(keyword in sensor_name_lower for keyword in ['upload', 'download', 'data']):
+            if value >= 1024 * 1024 * 1024:  # GB
+                return f"{value / (1024 * 1024 * 1024):.2f} GB"
+            elif value >= 1024 * 1024:  # MB
+                return f"{value / (1024 * 1024):.1f} MB"
+            elif value >= 1024:  # KB
+                return f"{value / 1024:.1f} KB"
+            else:
+                return f"{value:.0f} B"
+        
+        # Default: assume MB
+        return f"{value:.1f} MB"
+
     def _get_unit(self, sensor_type) -> str:
         """Returns the appropriate unit for a given sensor type."""
         # This can be expanded based on the SensorType enum
@@ -121,7 +151,7 @@ class HardwareMonitor:
         if 'Load' in sensor_type_str: return '%'
         if 'Clock' in sensor_type_str: return 'MHz'
         if 'Power' in sensor_type_str: return 'W'
-        if 'Data' in sensor_type_str: return 'GB'
+        if 'Data' in sensor_type_str: return 'MB'  # Changed from GB to MB
         if 'Fan' in sensor_type_str: return 'RPM'
         if 'Voltage' in sensor_type_str: return 'V'
         if 'Control' in sensor_type_str: return '%'

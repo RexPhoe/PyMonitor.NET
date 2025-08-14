@@ -130,14 +130,14 @@ class SettingsWindow(QDialog):
     def update_width(self, value):
         """Updates the width setting."""
         self.settings.set('position.width', value)
-        self.app.watermark.update_geometry()
+        self.app.watermark.update_appearance()
 
     def update_auto_width(self, state):
         """Updates the auto_width setting and enables/disables the width spinbox."""
         is_checked = state == Qt.CheckState.Checked.value
         self.settings.set('position.auto_width', is_checked)
         self.width_spinbox.setEnabled(not is_checked)
-        self.app.watermark.update_geometry()
+        self.app.watermark.update_appearance()
 
     def create_appearance_tab(self):
         """Creates the Appearance settings tab."""
@@ -270,10 +270,10 @@ class SettingsWindow(QDialog):
         display_layout.addRow("Sensor Indentation:", self.indentation_spinbox)
 
         self.spacing_spinbox = QSpinBox()
-        self.spacing_spinbox.setRange(0, 5)
+        self.spacing_spinbox.setRange(0, 50)
         self.spacing_spinbox.setValue(self.settings.get('visualization.category_spacing', 1))
         self.spacing_spinbox.valueChanged.connect(self.update_category_spacing)
-        display_layout.addRow("Category Spacing:", self.spacing_spinbox)
+        display_layout.addRow("Category Spacing (px):", self.spacing_spinbox)
 
         self.display_mode_combo = QComboBox()
         self.display_mode_combo.addItems(['Multiline', 'Single Line'])

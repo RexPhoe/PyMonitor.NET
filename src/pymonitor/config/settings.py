@@ -37,7 +37,7 @@ class Settings:
                 'component_order': [],
                 'show_component_titles': True,
                 'sensor_indentation': 4,
-                'category_spacing': 1,  # Number of blank lines
+                'category_spacing': 5,  # Spacing in pixels between categories
                 'display_mode': 'multiline',  # 'multiline' or 'singleline'
                 'show_icons': True
             },

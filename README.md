@@ -146,6 +146,7 @@ The application automatically detects and supports:
 #### CPU Frequency Monitoring
 
 The application includes an intelligent CPU frequency monitor that:
+
 - Automatically detects all CPU core frequencies in real-time
 - Calculates and displays the **maximum frequency** among all cores as "CPU Frequency"
 - Updates dynamically to show current processor performance

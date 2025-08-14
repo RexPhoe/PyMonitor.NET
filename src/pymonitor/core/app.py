@@ -238,9 +238,15 @@ class Application(QApplication):
                     else:
                         lines.append(line)
 
-                # Add vertical spacing between categories
-                for _ in range(category_spacing):
-                    lines.append("")
+                # Add vertical spacing between categories using CSS margin
+                if category_spacing > 0 and filtered_sensors:
+                    # Apply CSS margin to the last added element
+                    if lines and display_mode == 'multiline':
+                        # Add spacing after each hardware section
+                        lines.append(f'<div style="margin-bottom: {category_spacing}px;"></div>')
+                    elif lines and display_mode == 'singleline':
+                        # For single line mode, add spacing after the line
+                        lines.append(f'<div style="margin-bottom: {category_spacing}px;"></div>')
 
         # Remove the last blank lines if they exist
         while lines and lines[-1] == "":

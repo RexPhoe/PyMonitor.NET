@@ -122,13 +122,24 @@ class WatermarkWindow(QWidget):
             # Unset fixed size constraints to allow auto-sizing
             self.setMinimumSize(0, 0)
             self.setMaximumSize(16777215, 16777215) # QWIDGETSIZE_MAX
+            self.label.setWordWrap(False)  # Disable word wrap for auto width
             self.adjustSize() # Let the label and layout determine the size
         else:
             # Set fixed width and calculate required height
             width = int(self.settings.get('position.width', 400))
-            self.setFixedWidth(width)
+            self.label.setWordWrap(True)  # Enable word wrap for manual width
+            self.setMinimumSize(width, 0)
+            self.setMaximumSize(width, 16777215)
+            
+            # Force the label to calculate height for the given width
+            self.label.setFixedWidth(width)
             height = self.label.heightForWidth(width)
-            self.setFixedHeight(height)
+            if height > 0:
+                self.setFixedHeight(height)
+            else:
+                # Fallback: use adjustSize and then fix width
+                self.adjustSize()
+                self.setFixedWidth(width)
 
         # Apply opacity to the whole window
         self.setWindowOpacity(opacity / 100.0)
