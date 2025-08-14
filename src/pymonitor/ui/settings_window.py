@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
     QSlider, QHBoxLayout
 )
 import copy
+import sys
 from PyQt6.QtGui import QColor
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from ..core.version_checker import get_latest_lhm_version

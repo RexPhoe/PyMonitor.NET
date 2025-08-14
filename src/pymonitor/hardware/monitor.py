@@ -2,7 +2,7 @@
 
 import clr
 import os
-from System.Diagnostics import FileVersionInfo
+from System.Diagnostics import FileVersionInfo  # type: ignore # .NET library loaded at runtime
 
 class HardwareMonitor:
     """A wrapper for LibreHardwareMonitorLib to fetch hardware data."""
@@ -17,7 +17,7 @@ class HardwareMonitor:
             raise FileNotFoundError(f"Could not find LibreHardwareMonitorLib.dll at {self.dll_path}")
 
         clr.AddReference(self.dll_path)
-        from LibreHardwareMonitor import Hardware
+        from LibreHardwareMonitor import Hardware  # type: ignore # .NET library loaded at runtime
 
         # This is a workaround for a potential pythonnet issue where the namespace
         # is not immediately available.

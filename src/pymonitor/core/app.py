@@ -257,13 +257,22 @@ class Application(QApplication):
     def cleanup(self):
         """Performs cleanup operations before exiting."""
         print("Cleaning up resources...")
-        self.worker.stop()
-        self.thread.quit()
-        self.thread.wait() # Wait for the thread to finish
-        self.hardware_monitor.close()
+        try:
+            if hasattr(self, 'worker') and self.worker:
+                self.worker.stop()
+            if hasattr(self, 'thread') and self.thread:
+                self.thread.quit()
+                self.thread.wait(3000)  # Wait max 3 seconds for thread to finish
+            if hasattr(self, 'hardware_monitor') and self.hardware_monitor:
+                self.hardware_monitor.close()
+            if hasattr(self, 'tray_icon') and self.tray_icon:
+                self.tray_icon.hide()
+        except Exception as e:
+            print(f"Error during cleanup: {e}")
         print("Application stopped.")
 
     def exit(self):
         """Signals the application to exit gracefully."""
         print("Exit requested.")
+        # Force application exit - the cleanup will be called by aboutToQuit signal
         self.quit()

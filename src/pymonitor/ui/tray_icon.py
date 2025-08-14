@@ -34,8 +34,13 @@ class TrayIcon(QSystemTrayIcon):
 
         # Exit
         exit_action = QAction("Exit", self)
-        exit_action.triggered.connect(self.app.exit)
+        exit_action.triggered.connect(self.exit_application)
         self.menu.addAction(exit_action)
+
+    def exit_application(self):
+        """Safely exit the application."""
+        self.hide()  # Hide tray icon first
+        self.app.exit()  # Then exit the application
 
     def show_settings(self):
         """Shows the settings window, ensuring it is brought to the front."""
