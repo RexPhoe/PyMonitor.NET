@@ -152,11 +152,11 @@ class Application(QApplication):
     def exit(self):
         """Signals the application to exit gracefully."""
         print("Exit requested.")
-        # Perform cleanup manually first
-        self.cleanup()
-        # Force complete application exit
-        import sys
-        sys.exit(0)
+        # Only perform cleanup manually if we're actually exiting via tray
+        # Don't call cleanup here to avoid interference with normal startup
+        self.quit()
+
+    def _format_data_for_display(self, data):
         """Formats the hardware data for display based on user settings."""
         lines = []
         enabled_sensors_config = self.settings.get("visualization.enabled_sensors", {})
