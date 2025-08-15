@@ -112,41 +112,41 @@ class Application(QApplication):
             if hasattr(self, "worker") and self.worker:
                 print("Stopping worker...")
                 self.worker.stop()
-            
+
             # Stop and wait for thread to finish
             if hasattr(self, "thread") and self.thread:
                 print("Stopping thread...")
                 self.thread.quit()
                 self.thread.wait(3000)  # Wait max 3 seconds for thread to finish
-            
+
             # Close hardware monitor
             if hasattr(self, "hardware_monitor") and self.hardware_monitor:
                 print("Closing hardware monitor...")
                 self.hardware_monitor.close()
-            
+
             # Hide tray icon
             if hasattr(self, "tray_icon") and self.tray_icon:
                 print("Hiding tray icon...")
                 self.tray_icon.hide()
-            
+
             # Hide watermark window
             if hasattr(self, "watermark") and self.watermark:
                 print("Hiding watermark...")
                 self.watermark.hide()
-            
+
             # Close settings window
             if hasattr(self, "settings_window") and self.settings_window:
                 print("Closing settings window...")
                 self.settings_window.close()
-            
+
             # Detach shared memory
             if hasattr(self, "shared_memory") and self.shared_memory.isAttached():
                 print("Detaching shared memory...")
                 self.shared_memory.detach()
-                
+
         except Exception as e:
             print(f"Error during cleanup: {e}")
-        
+
         print("Cleanup complete. Exiting.")
 
     def exit(self):
@@ -263,6 +263,8 @@ class Application(QApplication):
                 )
             )
 
+        section_count = 0  # Track number of sections added
+        
         for hardware_item in data:
             hardware_name = hardware_item["name"]
             hardware_type = hardware_item.get("type", "")
@@ -274,6 +276,11 @@ class Application(QApplication):
             filtered_sensors.sort(key=lambda s: enabled_sensors.index(s["name"]))
 
             if filtered_sensors:
+                # Add spacing before this section (but not before the first section)
+                if section_count > 0 and category_spacing > 0:
+                    lines.append(
+                        f'<div style="margin-bottom: {category_spacing}px;"></div>'
+                    )
                 title_icon = (
                     get_hw_icon(hardware_type or hardware_name) if show_icons else ""
                 )
@@ -314,19 +321,8 @@ class Application(QApplication):
                     else:
                         lines.append(line)
 
-                # Add vertical spacing between categories using CSS margin
-                if category_spacing > 0 and filtered_sensors:
-                    # Apply CSS margin to the last added element
-                    if lines and display_mode == "multiline":
-                        # Add spacing after each hardware section
-                        lines.append(
-                            f'<div style="margin-bottom: {category_spacing}px;"></div>'
-                        )
-                    elif lines and display_mode == "singleline":
-                        # For single line mode, add spacing after the line
-                        lines.append(
-                            f'<div style="margin-bottom: {category_spacing}px;"></div>'
-                        )
+                # Increment section counter since we added a section
+                section_count += 1
 
         # Remove the last blank lines if they exist
         while lines and lines[-1] == "":
