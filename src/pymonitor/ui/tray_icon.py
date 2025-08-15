@@ -4,8 +4,10 @@ from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtWidgets import QApplication
 
+
 class TrayIcon(QSystemTrayIcon):
     """Manages the system tray icon and its context menu using PyQt6."""
+
     def __init__(self, app):
         super().__init__()
         self.app = app
@@ -39,8 +41,17 @@ class TrayIcon(QSystemTrayIcon):
 
     def exit_application(self):
         """Safely exit the application."""
+        print("Exit application requested from tray icon...")
         self.hide()  # Hide tray icon first
-        self.app.exit()  # Then exit the application
+        
+        # Force complete application termination
+        self.app.exit()
+        
+        # As a last resort, force system exit
+        import sys
+        import os
+        print("Forcing system exit...")
+        os._exit(0)
 
     def show_settings(self):
         """Shows the settings window, ensuring it is brought to the front."""

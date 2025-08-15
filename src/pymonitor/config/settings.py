@@ -5,10 +5,11 @@ import os
 import sys
 import collections.abc
 
+
 class Settings:
     """Manages the application's user-configurable settings."""
 
-    def __init__(self, settings_path='settings.json'):
+    def __init__(self, settings_path="settings.json"):
         self.path = settings_path
         self.data = self._load_defaults()
         self.load()
@@ -16,78 +17,78 @@ class Settings:
     def _load_defaults(self):
         """Returns a dictionary with the default settings."""
         return {
-
-            'appearance': {
-                'font_family': 'HackNerdFont',
-                'font_size': 12,
-                'font_color': '#FFFFFF',
-                'opacity': 100,
-                'text_align': 'left' # left, center, right
+            "appearance": {
+                "font_family": "HackNerdFont",
+                "font_size": 12,
+                "font_color": "#FFFFFF",
+                "opacity": 100,
+                "text_align": "left",  # left, center, right
             },
-            'position': {
-                'monitor': 0, # Index of the monitor
-                'anchor': 'top_left', # e.g., 'top_left', 'center', 'bottom_right'
-                'offset_x': 10,
-                'offset_y': 10,
-                'width': 400,
-                'auto_width': True # New setting to enable automatic width adjustment
+            "position": {
+                "monitor": 0,  # Index of the monitor
+                "anchor": "top_left",  # e.g., 'top_left', 'center', 'bottom_right'
+                "offset_x": 10,
+                "offset_y": 10,
+                "width": 400,
+                "auto_width": True,  # New setting to enable automatic width adjustment
             },
-            'visualization': {
-                'enabled_sensors': {},
-                'component_order': [],
-                'show_component_titles': True,
-                'sensor_indentation': 4,
-                'category_spacing': 5,  # Spacing in pixels between categories
-                'display_mode': 'multiline',  # 'multiline' or 'singleline'
-                'show_icons': True
+            "visualization": {
+                "enabled_sensors": {},
+                "component_order": [],
+                "show_component_titles": True,
+                "sensor_indentation": 4,
+                "category_spacing": 5,  # Spacing in pixels between categories
+                "display_mode": "multiline",  # 'multiline' or 'singleline'
+                "show_icons": True,
             },
-            'monitoring': {
-                'update_interval': 2, # in seconds
-                'temperature_unit': 'celsius', # celsius or fahrenheit
-                'enabled_hardware': ['Cpu', 'GpuNvidia', 'Memory'], # Default hardware types
-                'enabled_sensors': {
+            "monitoring": {
+                "update_interval": 2,  # in seconds
+                "temperature_unit": "celsius",  # celsius or fahrenheit
+                "enabled_hardware": [
+                    "Cpu",
+                    "GpuNvidia",
+                    "Memory",
+                ],  # Default hardware types
+                "enabled_sensors": {
                     # Example: 'Cpu': ['CPU Total', 'CPU Package']
                 },
-                'order': {
-                    'hardware': ['Cpu', 'GpuNvidia', 'Memory'],
-                    'sensors': {}
-                }
+                "order": {"hardware": ["Cpu", "GpuNvidia", "Memory"], "sensors": {}},
             },
-            'about': {
-                'version': '0.2.0-beta',
-                'author': 'Cascade, from Windsurf',
-                'repository_url': 'https://github.com/RexPhoe/PyMonitor.NET'
+            "about": {
+                "version": "0.2.0-beta",
+                "author": "Cascade, from Windsurf",
+                "repository_url": "https://github.com/RexPhoe/PyMonitor.NET",
             },
-            'icons': {
-                'hardware': {
-                    'Cpu': '\uf2db',
-                    'GPU': '\uf21b5',
-                    'GpuNvidia': '\uf21b5',
-                    'GpuAmd': '\uf21b5',
-                    'GpuIntel': '\uf21b5',
-                    'Memory': '\uf96a',
-                    'Motherboard': '\uf2db',
-                    'Storage': '\uf287',
-                    'HDD': '\uf287',
-                    'SSD': '\uf287',
-                    'Network': '\uf6ff',
-                    'Wifi': '\uf5a9'
+            "icons": {
+                "hardware": {
+                    "Cpu": "\uf2db",
+                    "GPU": "\uf21b5",
+                    "GpuNvidia": "\uf21b5",
+                    "GpuAmd": "\uf21b5",
+                    "GpuIntel": "\uf21b5",
+                    "Memory": "\uf96a",
+                    "Motherboard": "\uf2db",
+                    "Storage": "\uf287",
+                    "HDD": "\uf287",
+                    "SSD": "\uf287",
+                    "Network": "\uf6ff",
+                    "Wifi": "\uf5a9",
                 },
-                'sensors': {
-                    'temperature': '\uf2c9',
-                    'load': '\uf141',
-                    'clock': '\uf251',
-                    'power': '\uf0e7',
-                    'fan': '\uf863',
-                    'data': '\uf1c0',
-                    'voltage': '\uf1e6'
-                }
-            }
+                "sensors": {
+                    "temperature": "\uf2c9",
+                    "load": "\uf141",
+                    "clock": "\uf251",
+                    "power": "\uf0e7",
+                    "fan": "\uf863",
+                    "data": "\uf1c0",
+                    "voltage": "\uf1e6",
+                },
+            },
         }
 
     def get(self, key, default=None):
         """Gets a setting value using dot notation (e.g., 'window.anchor')."""
-        keys = key.split('.')
+        keys = key.split(".")
         value = self.data
         try:
             for k in keys:
@@ -98,7 +99,7 @@ class Settings:
 
     def set(self, key, value):
         """Sets a setting value using dot notation."""
-        keys = key.split('.')
+        keys = key.split(".")
         d = self.data
         for k in keys[:-1]:
             d = d.setdefault(k, {})
@@ -108,7 +109,7 @@ class Settings:
         """Saves the current settings to the file."""
         print(f"Saving settings to: {self.path}")
         try:
-            with open(self.path, 'w') as f:
+            with open(self.path, "w") as f:
                 json.dump(self.data, f, indent=4)
             print("Settings saved successfully.")
         except IOError as e:
@@ -123,15 +124,17 @@ class Settings:
             return
 
         try:
-            with open(self.path, 'r') as f:
+            with open(self.path, "r") as f:
                 user_settings = json.load(f)
-            
+
             # Deep merge user settings into defaults
             self.data = self._deep_update(self._load_defaults(), user_settings)
             print("Settings loaded successfully.")
 
         except (json.JSONDecodeError, IOError) as e:
-            print(f"Error loading settings: {e}. Using default settings.", file=sys.stderr)
+            print(
+                f"Error loading settings: {e}. Using default settings.", file=sys.stderr
+            )
             self.data = self._load_defaults()
 
     def _deep_update(self, d, u):
