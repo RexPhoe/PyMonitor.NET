@@ -2,17 +2,17 @@
     "appearance": {
         "font_family": "Hack Nerd Font",
         "font_size": 15,
-        "font_color": "#ffffff",
-        "opacity": 100,
+        "font_color": "#99ff00",
+        "opacity": 68,
         "text_align": "left"
     },
     "position": {
         "monitor": 1,
         "anchor": "bottom_left",
-        "offset_x": 5,
-        "offset_y": 50,
-        "width": 360,
-        "auto_width": true
+        "offset_x": 0,
+        "offset_y": 47,
+        "width": 1920,
+        "auto_width": false
     },
     "visualization": {
         "enabled_sensors": {
@@ -37,14 +37,18 @@
             "Conexi\u00f3n de \u00e1rea local* 10": [],
             "Conexi\u00f3n de \u00e1rea local* 9": [],
             "Conexi\u00f3n de red Bluetooth": [],
-            "Ethernet": [],
+            "Ethernet": [
+                "Upload Speed",
+                "Download Speed",
+                "Network Utilization"
+            ],
             "Wi-Fi": []
         },
         "component_order": [],
-        "show_component_titles": false,
+        "show_component_titles": true,
         "sensor_indentation": 0,
         "category_spacing": 0,
-        "display_mode": "multiline",
+        "display_mode": "singleline",
         "show_icons": true
     },
     "monitoring": {
