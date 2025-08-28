@@ -264,7 +264,7 @@ class Application(QApplication):
             )
 
         section_count = 0  # Track number of sections added
-        
+
         for hardware_item in data:
             hardware_name = hardware_item["name"]
             hardware_type = hardware_item.get("type", "")

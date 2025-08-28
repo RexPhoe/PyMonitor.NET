@@ -43,13 +43,14 @@ class TrayIcon(QSystemTrayIcon):
         """Safely exit the application."""
         print("Exit application requested from tray icon...")
         self.hide()  # Hide tray icon first
-        
+
         # Force complete application termination
         self.app.exit()
-        
+
         # As a last resort, force system exit
         import sys
         import os
+
         print("Forcing system exit...")
         os._exit(0)
 
