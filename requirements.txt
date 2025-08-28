@@ -1,3 +1,9 @@
-pythonnet
-PyQt6
-requests
+# Core dependencies for PyMonitor.NET
+pythonnet>=3.0.1
+PyQt6>=6.4.0
+requests>=2.28.0
+
+# Additional dependencies for enhanced functionality
+urllib3>=1.26.0  # For reliable HTTP handling with requests
+certifi>=2022.12.7  # For SSL certificate validation
+charset-normalizer>=2.0.0  # For character encoding detection (used by requests)
