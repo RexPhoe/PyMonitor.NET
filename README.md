@@ -44,12 +44,16 @@
 
 ## Installation
 
-1.  **Clone the repository:**
+⚠️ **IMPORTANT**: Do not run the application directly from the Downloads folder! .NET security restrictions will prevent the DLL files from loading. Move the entire project folder to a permanent location like `C:\Program Files\PyMonitor.NET` or `C:\Users\YourUser\Documents\PyMonitor.NET` before running.
+
+1.  **Clone or download the repository:**
 
     ```bash
     git clone https://github.com/RexPhoe/PyMonitor.NET.git
     cd PyMonitor.NET
     ```
+
+    **OR download ZIP and extract to a permanent location** (NOT Downloads folder).
 
 2.  **Install Python dependencies:**
 
@@ -151,6 +155,27 @@ The application includes an intelligent CPU frequency monitor that:
 - Calculates and displays the **maximum frequency** among all cores as "CPU Frequency"
 - Updates dynamically to show current processor performance
 - Provides accurate MHz readings for performance monitoring
+
+---
+
+## Troubleshooting
+
+### ⚠️ Common Issues
+
+**Error: "No se puede cargar el archivo o ensamblado" (0x80131515)**
+
+This is the most common issue! It occurs when running from untrusted locations like the Downloads folder.
+
+**Quick Fix:**
+1. Move the entire `PyMonitor.NET` folder to: `C:\Program Files\PyMonitor.NET` or `C:\Users\YourUser\Documents\PyMonitor.NET`
+2. Run from the new location
+
+**For detailed troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md)**
+
+### Other Issues:
+- **App doesn't appear**: Look for the system tray icon (near the clock)
+- **Missing DLL errors**: Ensure `LibreHardwareMonitorLib.dll` and `HidSharp.dll` are in the root folder
+- **Permission errors**: Run as Administrator if needed
 
 ---
 

@@ -5,6 +5,11 @@ import os
 from System.Diagnostics import FileVersionInfo  # type: ignore # .NET library loaded at runtime
 
 
+class UntrustedLocationError(Exception):
+    """Exception raised when DLL is in an untrusted location that .NET blocks."""
+    pass
+
+
 class HardwareMonitor:
     """A wrapper for LibreHardwareMonitorLib to fetch hardware data."""
 
@@ -21,12 +26,53 @@ class HardwareMonitor:
                 f"Could not find LibreHardwareMonitorLib.dll at {self.dll_path}"
             )
 
-        clr.AddReference(self.dll_path)
-        from LibreHardwareMonitor import Hardware  # type: ignore # .NET library loaded at runtime
+        # Check if DLL is in an untrusted location
+        self._check_dll_location()
 
-        # This is a workaround for a potential pythonnet issue where the namespace
-        # is not immediately available.
-        self.Hardware = Hardware
+        try:
+            clr.AddReference(self.dll_path)
+            from LibreHardwareMonitor import Hardware  # type: ignore # .NET library loaded at runtime
+
+            # This is a workaround for a potential pythonnet issue where the namespace
+            # is not immediately available.
+            self.Hardware = Hardware
+        except Exception as e:
+            if "0x80131515" in str(e) or "loadFromRemoteSources" in str(e):
+                raise UntrustedLocationError(
+                    f"Cannot load LibreHardwareMonitorLib.dll from untrusted location: {self.dll_path}\n"
+                    f"This error occurs when the application is run from folders like Downloads.\n\n"
+                    f"SOLUTION:\n"
+                    f"1. Move the entire PyMonitor.NET folder to a trusted location like:\n"
+                    f"   - C:\\Program Files\\PyMonitor.NET\n"
+                    f"   - C:\\Users\\{os.getenv('USERNAME', 'YourUser')}\\Documents\\PyMonitor.NET\n"
+                    f"   - C:\\PyMonitor.NET\n\n"
+                    f"2. Or right-click on LibreHardwareMonitorLib.dll → Properties → Unblock\n\n"
+                    f"3. Then run the application from the new location.\n\n"
+                    f"Original error: {e}"
+                ) from e
+            else:
+                raise
+
+    def _check_dll_location(self):
+        """Check if DLL is in a potentially problematic location."""
+        dll_dir = os.path.dirname(self.dll_path).lower()
+        problematic_paths = [
+            "downloads",
+            "download", 
+            "temp",
+            "tmp",
+            "desktop\\pymonitor", # Only if it's a downloaded folder
+        ]
+        
+        # Check if path contains problematic folders
+        for problematic in problematic_paths:
+            if problematic in dll_dir:
+                print(f"⚠️  WARNING: Application is running from potentially untrusted location: {self.dll_path}")
+                print(f"   If you encounter loading errors, move the folder to a trusted location like:")
+                print(f"   - C:\\Program Files\\PyMonitor.NET")
+                print(f"   - C:\\Users\\{os.getenv('USERNAME', 'YourUser')}\\Documents\\PyMonitor.NET")
+                print(f"   - C:\\PyMonitor.NET")
+                break
 
     def initialize(self) -> None:
         """Creates an instance of the Computer class from the DLL."""
