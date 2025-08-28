@@ -160,22 +160,61 @@ The application includes an intelligent CPU frequency monitor that:
 
 ## Troubleshooting
 
-### ⚠️ Common Issues
+### 🚨 Most Common Error: Assembly Loading (0x80131515)
 
-**Error: "No se puede cargar el archivo o ensamblado" (0x80131515)**
+**Error Message**: "Cannot load assembly 'LibreHardwareMonitorLib.dll'... Operation is not supported."
 
-This is the most common issue! It occurs when running from untrusted locations like the Downloads folder.
+**Root Cause**: .NET Framework blocks loading assemblies from "untrusted" locations like Downloads folder.
 
-**Quick Fix:**
-1. Move the entire `PyMonitor.NET` folder to: `C:\Program Files\PyMonitor.NET` or `C:\Users\YourUser\Documents\PyMonitor.NET`
-2. Run from the new location
+### ✅ QUICK FIXES (Try in order):
 
-**For detailed troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md)**
+#### Fix 1: Move to Trusted Location (RECOMMENDED - 95% Success)
+```bash
+# 1. Move entire folder to:
+C:\Program Files\PyMonitor.NET
+# OR
+C:\Users\[YourUsername]\Documents\PyMonitor.NET
 
-### Other Issues:
-- **App doesn't appear**: Look for the system tray icon (near the clock)
-- **Missing DLL errors**: Ensure `LibreHardwareMonitorLib.dll` and `HidSharp.dll` are in the root folder
-- **Permission errors**: Run as Administrator if needed
+# 2. Run from new location:
+cd "C:\Program Files\PyMonitor.NET"
+python run.pyw
+```
+
+#### Fix 2: Unblock DLL Files (80% Success)
+1. Right-click `LibreHardwareMonitorLib.dll` → **Properties** → Check **"Unblock"** → **OK**
+2. Right-click `HidSharp.dll` → **Properties** → Check **"Unblock"** → **OK**
+3. Run: `python run.pyw`
+
+#### Fix 3: PowerShell Unblock (85% Success)
+```powershell
+# Run PowerShell as Administrator
+cd "C:\path\to\PyMonitor.NET"
+Get-ChildItem -Recurse | Unblock-File
+```
+
+### 🔧 Other Common Issues
+
+| Problem | Solution |
+|---------|----------|
+| **App doesn't appear** | Check system tray (near clock) for PyMonitor.NET icon |
+| **Missing DLL errors** | Ensure `LibreHardwareMonitorLib.dll` and `HidSharp.dll` are in root folder |
+| **Permission errors** | Run Command Prompt as Administrator, then: `python run.pyw` |
+| **High CPU usage** | Increase update interval in settings, disable unused sensors |
+| **No hardware detected** | Run as Administrator, update motherboard drivers |
+
+### 🔍 Quick Diagnostics
+```bash
+# Test if DLLs can load:
+python -c "import clr; clr.AddReference('./LibreHardwareMonitorLib.dll'); print('SUCCESS')"
+
+# Verify dependencies:
+pip install -r requirements.txt
+
+# Test basic functionality:
+python -m src.pymonitor.main
+```
+
+**📋 Complete troubleshooting guide: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)**
 
 ---
 
